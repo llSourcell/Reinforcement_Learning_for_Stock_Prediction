@@ -130,8 +130,8 @@ if __name__ == '__main__':
     prices = get_prices('MSFT', '2000-07-01', '2017-07-01', 'resource/stock_prices.npy')
     actions = ['Buy', 'Sell', 'Hold']
     hist = 200
-    policy = RandomDecisionPolicy(actions)
-    # policy = QLearningDecisionPolicy(actions, hist + 2)
+    # policy = RandomDecisionPolicy(actions)
+    policy = QLearningDecisionPolicy(actions, hist + 2)
     budget = 1000.0
     num_stocks = 0
     avg, std = run_simulations(policy, budget, num_stocks, prices, hist)
