@@ -35,7 +35,7 @@ class Agent:
 		return model
 
 	def act(self, state):
-		if not self.is_eval and np.random.rand() <= self.epsilon:
+		if not self.is_eval and random.random() <= self.epsilon:
 			return random.randrange(self.action_size)
 
 		options = self.model.predict(state)
@@ -44,7 +44,7 @@ class Agent:
 	def expReplay(self, batch_size):
 		mini_batch = []
 		l = len(self.memory)
-		for i in xrange(l - batch_size + 1, l):
+		for i in range(l - batch_size + 1, l):
 			mini_batch.append(self.memory[i])
 
 		for state, action, reward, next_state, done in mini_batch:
