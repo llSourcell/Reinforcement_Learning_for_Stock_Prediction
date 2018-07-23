@@ -21,6 +21,7 @@ class Agent:
 		self.epsilon = 1.0
 		self.epsilon_min = 0.01
 		self.epsilon_decay = 0.995
+		self.first = True
 
 		self.model = load_model("models/" + model_name) if is_eval else self._model()
 
@@ -35,16 +36,21 @@ class Agent:
 		return model
 
 	def act(self, state):
-		if not self.is_eval and np.random.rand() <= self.epsilon:
+		rand_val = np.random.rand()
+		if not self.is_eval and rand_val <= self.epsilon:
 			return random.randrange(self.action_size)
 
+		if(self.first):
+			self.first = False
+			return 1
 		options = self.model.predict(state)
+		#print("Using prediction")
 		return np.argmax(options[0])
 
 	def expReplay(self, batch_size):
 		mini_batch = []
 		l = len(self.memory)
-		for i in xrange(l - batch_size + 1, l):
+		for i in range(l - batch_size + 1, l):
 			mini_batch.append(self.memory[i])
 
 		for state, action, reward, next_state, done in mini_batch:
