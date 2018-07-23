@@ -17,7 +17,17 @@ def getStockDataVec(key):
 
 # returns the sigmoid
 def sigmoid(x):
-	return 1 / (1 + math.exp(-x))
+	try:
+		if x < 0:
+			return 1 - 1 / (1 + math.exp(x))
+		return 1 / (1 + math.exp(-x))
+	except OverflowError as err:
+		print("Overflow err: {0} - Val of x: {1}".format(err, x))
+	except ZeroDivisionError:
+		print("division by zero!")
+	except Exception as err:
+		print("Error in sigmoid: " + err)
+	
 
 # returns an an n-day state representation ending at time t
 def getState(data, t, n):
