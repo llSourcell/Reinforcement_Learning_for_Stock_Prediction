@@ -33,6 +33,10 @@ Then when training finishes (minimum 200 episodes for results):
 python evaluate.py ^GSPC_2011 model_ep1000
 ```
 
+## Some changes I had to modify from original
+- Had to modify sigmoid slightly to prevent overflow occuring in Math.exp
+- Added a boolean for first iteration which forces a buy so there is something in agent.inventory  (May look into finding the best statistical time to buy in a future imp based on the current price of entry...for now this has gotten things working when evaluating)
+
 ## References
 
 [Deep Q-Learning with Keras and Gym](https://keon.io/deep-q-learning/) - Q-learning overview and Agent skeleton code
