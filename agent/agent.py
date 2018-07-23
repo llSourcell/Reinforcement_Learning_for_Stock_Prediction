@@ -21,7 +21,7 @@ class Agent:
 		self.epsilon = 1.0
 		self.epsilon_min = 0.01
 		self.epsilon_decay = 0.995
-		self.first = True
+		self.firstIter = True
 
 		self.model = load_model("models/" + model_name) if is_eval else self._model()
 
@@ -40,7 +40,7 @@ class Agent:
 		if not self.is_eval and rand_val <= self.epsilon:
 			return random.randrange(self.action_size)
 
-		if(self.first):
+		if(self.firstIter):
 			self.first = False
 			return 1
 		options = self.model.predict(state)
