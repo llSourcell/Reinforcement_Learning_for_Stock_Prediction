@@ -41,7 +41,7 @@ class Agent:
 			return random.randrange(self.action_size)
 
 		if(self.firstIter):
-			self.first = False
+			self.firstIter = False
 			return 1
 		options = self.model.predict(state)
 		#print("Using prediction")
