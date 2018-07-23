@@ -49,6 +49,8 @@ try:
 			print (stock_name + " Total Profit: " + formatPrice(total_profit))
 			print ("--------------------------------")
 		
+		if len(agent.memory) > batch_size:
+				agent.expReplay(batch_size) 
 
 finally:
 	exit()
