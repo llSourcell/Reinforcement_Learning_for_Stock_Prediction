@@ -4,6 +4,12 @@ from keras.models import load_model
 from agent.agent import Agent
 from functions import *
 import sys
+import numpy as np
+
+import datetime
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import matplotlib.cbook as cbook
 
 try:
 	if len(sys.argv) != 3:
@@ -23,6 +29,11 @@ try:
 	total_profit = 0
 	agent.inventory = []
 
+	# Setup our plot
+	fig, ax = plt.subplots()
+	timeseries_iter = 0
+	#plt_data = []
+
 	for t in range(l):
 		action = agent.act(state)
 
@@ -32,14 +43,18 @@ try:
 
 		if action == 1: # buy
 			agent.inventory.append(data[t])
+			#plt_data.append((timeseries_iter, data[t], 'Buy'))
 			print ("Buy: " + formatPrice(data[t]))
 
 		elif action == 2 and len(agent.inventory) > 0: # sell
 			bought_price = agent.inventory.pop(0)
 			reward = max(data[t] - bought_price, 0)
 			total_profit += data[t] - bought_price
+			#plt_data.append((timeseries_iter, data[t], 'Sell'))
+			
 			print ("Sell: " + formatPrice(data[t]) + " | Profit: " + formatPrice(data[t] - bought_price))
 
+		#timeseries_iter += 1
 		done = True if t == l - 1 else False
 		agent.memory.append((state, action, reward, next_state, done))
 		state = next_state
@@ -52,5 +67,11 @@ try:
 		if len(agent.memory) > batch_size:
 				agent.expReplay(batch_size) 
 
+	#plt_data = np.array(plt_data)/
+	#ax.plot(plt_data[:, 0], plt_data[:, 1])
+	#Display our plots
+	#plt.show()
+except Exception as e:
+	print("Error is: " + e)
 finally:
 	exit()

@@ -2,6 +2,9 @@ from agent.agent import Agent
 from functions import *
 import sys
 
+
+from keras.callbacks import TensorBoard, EarlyStopping
+
 try:
 	if len(sys.argv) != 4:
 		print ("Usage: python train.py [stock] [window] [episodes]")
@@ -52,5 +55,7 @@ try:
 
 		if e % 10 == 0:
 			agent.model.save("models/model_ep" + str(e))
+except Exception as e:
+	print("Error occured: {0}".format(e))
 finally:
 	exit()

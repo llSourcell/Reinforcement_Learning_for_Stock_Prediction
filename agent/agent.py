@@ -1,11 +1,15 @@
 import keras
+from keras import backend as K
 from keras.models import Sequential
 from keras.models import load_model
 from keras.layers import Dense
 from keras.optimizers import Adam
 
+from keras.callbacks import TensorBoard, EarlyStopping
+
 import numpy as np
 import random
+import os
 from collections import deque
 
 class Agent:
@@ -23,6 +27,10 @@ class Agent:
 		self.epsilon_decay = 0.995
 		self.firstIter = True
 
+		#Make sure our directory is available
+		self.setupTensorboardDir()
+		self.callbacks = [LRTensorBoard(log_dir=self.log_dir)]
+
 		self.model = load_model("models/" + model_name) if is_eval else self._model()
 
 	def _model(self):
@@ -35,6 +43,7 @@ class Agent:
 
 		return model
 
+	#Action
 	def act(self, state):
 		rand_val = np.random.rand()
 		if not self.is_eval and rand_val <= self.epsilon:
@@ -60,7 +69,26 @@ class Agent:
 
 			target_f = self.model.predict(state)
 			target_f[0][action] = target
-			self.model.fit(state, target_f, epochs=1, verbose=0)
+			self.model.fit(state, target_f, epochs=1, verbose=0, callbacks=self.callbacks)
 
 		if self.epsilon > self.epsilon_min:
 			self.epsilon *= self.epsilon_decay 
+
+	def setupTensorboardDir(self):
+		current_dir = os.path.dirname(os.path.realpath(__file__))
+		self.log_dir = os.path.join(current_dir, '../tensorboard')
+		print('Working directory: %s' % current_dir)
+		if not os.path.exists(self.log_dir) or not os.path.isdir(self.log_dir):
+			os.mkdir(self.log_dir)
+
+class LRTensorBoard(TensorBoard):
+	def __init__(self, *args, **kwargs):
+		#self.scalar = kwargs.pop('scalar', True)
+		super(LRTensorBoard, self).__init__(*args, **kwargs)
+
+		global tf
+		import tensorflow as tf
+
+	def on_epoch_end(self, epoch, logs=None):
+		logs.update({'lr': K.eval(self.model.optimizer.lr)})
+		super(LRTensorBoard, self).on_epoch_end(epoch, logs)
