@@ -56,7 +56,7 @@ class Agent:
 		mini_batch = []
 		l = len(self.memory)
 		for i in range(l - batch_size + 1, l):
-			mini_batch.append(self.memory[i])
+			mini_batch.append(self.memory.popleft())
 
 		for state, action, reward, next_state, done in mini_batch:
 			target = reward
